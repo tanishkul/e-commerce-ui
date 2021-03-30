@@ -4,25 +4,60 @@ import { userService } from '../../services';
 import { alertActions } from '../alert';
 import { history } from '../../helpers';
 
-const login = async (username, password) => {
+const setMessage = message => ({
+  type: userConstants.SET_MESSAGE,
+  payload: message,
+});
+
+const clearMessage = () => ({
+  type: userConstants.CLEAR_MESSAGE,
+});
+
+export const login = (username, email, password) => async (dispatch) => {
   const request = user => ({ type: userConstants.LOGIN_REQUEST, user })
   const success = user => ({ type: userConstants.LOGIN_SUCCESS, user })
   const failure = error => ({ type: userConstants.LOGIN_FAILURE, error })
+
   try {
-    request({ user: username });
-    const user = await userService.login(username, password)
-    success(user);
-    history.push('/', { user });
-    return user;
-  } catch (err) {
-    console.log('Error-11111111111----------', err)
-    err.map(({ msg }) => {
-      failure(`${msg}`);
-      alertActions.error(`${msg}`);
+    dispatch(request({ user: username }));
+    console.log('mmmmmmmmmmmmm', username, password);
+    const user = await userService.login(username, email, password)
+    console.log('success---------', username, password);
+    console.log('after- success---------', username, password);
+    // history.push('/', { user });
+    dispatch(success(user));
+    // return fetchInfo;
+  } catch (error) {
+    console.log('error:++++++++ ', error);
+    dispatch(failure(error));
+    error.forEach(({ msg }) => {
+      dispatch(alertActions.error(`${msg}`));
     })
-    throw err;
   }
 }
+
+// const login = async (username, password) => {
+//   const request = user => ({ type: userConstants.LOGIN_REQUEST, user })
+//   const success = user => ({ type: userConstants.LOGIN_SUCCESS, user })
+//   const failure = error => ({ type: userConstants.LOGIN_FAILURE, error })
+//   try {
+//     request({ user: username });
+//     console.log('mmmmmmmmmmmmm', username, password);
+//     const user = await userService.login(username, password)
+//     console.log('success---------', username, password);
+//     console.log('after- success---------', username, password);
+//     history.push('/', { user });
+//     success(user);
+//   } catch (err) {
+//     console.log('Error-11111111111----------', err)
+//     failure(err);
+//      err.forEach(({ msg }) => {
+//      alertActions.error(`${msg}`);
+//     })
+//     console.log('Error-2222222222222----------', err)
+//     throw err;
+//   }
+// }
 
 const logout = () => {
   userService.logout();
@@ -90,5 +125,7 @@ export const userActions = {
   logout,
   register,
   getAll,
-  delete: _delete
+  delete: _delete,
+  setMessage,
+  clearMessage
 };

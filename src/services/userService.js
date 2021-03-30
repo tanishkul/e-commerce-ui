@@ -5,17 +5,18 @@ import {
   authHeader
 } from '../helpers';
 
-const login = async (username, password) => {
+const login = async (username, email, password) => {
   try {
     const data = await axios({
       method: 'post',
-      url: `${config.apiUrl}/user/`,
+      url: `${config.apiUrl}/user/login`,
       data: {
-        // email: 'hvadjv',
+        email,
         name: username,
         password
       }
     });
+    console.log('data-userServeic-----------', data);
     const user = handleResponse(data);
     // store user details and jwt token in local storage to keep user logged in between page refreshes
     localStorage.setItem('user', JSON.stringify(user));

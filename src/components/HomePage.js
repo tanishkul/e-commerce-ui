@@ -21,6 +21,7 @@ class HomePage extends React.Component {
   }
 
   render() {
+    console.log('this props-------------', this.props)
     const { users } = this.props;
     const { location: { state: { user } } } = this.props;
     return (

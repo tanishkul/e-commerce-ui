@@ -5,6 +5,7 @@ function success(message) {
 }
 
 function error(message) {
+console.log('alert-----------', message)
   return { type: alertConstants.ERROR, message };
 }
 
