@@ -37,7 +37,7 @@ class LoginPage extends React.Component {
       const { login, history } = this.props;
       if ((username || email) && password) {
         const data = await login(username, email, password);
-        console.log('data-------------', data, localStorage.getItem('user'))
+        console.log('data-------------', data, sessionStorage.getItem('user'))
         const user = localStorage.getItem('user');
         history.push('/', { user });
       }
@@ -102,18 +102,6 @@ class LoginPage extends React.Component {
     );
   }
 }
-
-// function mapState(state) {
-//   if (state && state.authentication) {
-//     const { loggingIn } = state.authentication;
-//     return { loggingIn };
-//   }
-// }
-
-// const actionCreators = {
-//   login: userActions.login,
-//   logout: userActions.logout
-// };
 
 const mapStateToProps = state => ({
   loggingIn: state.authentication?.loggingIn,

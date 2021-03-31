@@ -2,7 +2,8 @@ import axios from 'axios';
 
 import config from '../config/config';
 import {
-  authHeader
+  authHeader,
+  utilities
 } from '../helpers';
 
 const login = async (username, email, password) => {
@@ -16,69 +17,16 @@ const login = async (username, email, password) => {
         password
       }
     });
-    console.log('data-userServeic-----------', data);
     const user = handleResponse(data);
     // store user details and jwt token in local storage to keep user logged in between page refreshes
-    localStorage.setItem('user', JSON.stringify(user));
+    utilities.storeUserInfo(user);
     return user;
   } catch (error) {
-    const data = handleResponse(error.response);
-    console.log('Inside login ', data);
-    throw data;
+    throw handleResponse(error.response);
   }
 }
 
-// function login(username, password) {
-//   const requestOptions = {
-//     method: 'POST',
-//     headers: {
-//       'Content-Type': 'application/json'
-//     },
-//     body: {
-//       email: 'hvadjv',
-//       name: username,
-//       password
-//     }
-//   };
-
-//   // axios({
-//   //   method: 'POST',
-//   //   url: '/user/12345',
-//   //   data: {
-//   //     firstName: 'Fred',
-//   //     lastName: 'Flintstone'
-//   //   }
-//   // });
-//   return axios({
-//     method: 'post',
-//     url: `${config.apiUrl}/user/`,
-//     data: {
-//       // email: 'hvadjv',
-//       name: username,
-//       password
-//     }
-//   }).then(handleResponse)
-//     .then((user) => {
-//       // store user details and jwt token in local storage to keep user logged in between page refreshes
-//       localStorage.setItem('user', JSON.stringify(user));
-
-//       return user;
-//     }).catch((err) => {
-//     });
-//   // return axios.post(`${config.apiUrl}/user/`, requestOptions)
-//   // .then(handleResponse)
-//   // .then((user) => {
-//   //   // store user details and jwt token in local storage to keep user logged in between page refreshes
-//   //   localStorage.setItem('user', JSON.stringify(user));
-
-//   //   return user;
-//   // });
-// }
-
-function logout() {
-  // remove user from local storage to log user out
-  localStorage.removeItem('user');
-}
+const logout = () => utilities.removeUserInfo;
 
 function getAll() {
   const requestOptions = {

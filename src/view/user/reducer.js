@@ -48,19 +48,21 @@ export function users(state = {}, action) {
         user: action.user
       };
     case userConstants.LOGIN_SUCCESS:
-      console.log('auth-LOGIN**********-----------', state, action)
       return {
         loggedIn: true,
         user: action.user
       };
     case userConstants.LOGIN_FAILURE:
-      console.log('auth------------', state, action)
       return {
         loggedIn: false,
         user: null
       };
     case userConstants.LOGOUT:
-      return {};
+      console.log('user logout-----------', state, action)
+      return {
+        loggedIn: false,
+        user: null
+      };
     default:
       return state
   }

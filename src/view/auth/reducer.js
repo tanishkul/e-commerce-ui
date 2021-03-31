@@ -97,7 +97,10 @@ export function auth(state = initialState, action) {
         user: null
       };
     case userConstants.LOGOUT:
-      return {};
+      return {
+        loggedIn: false,
+        user: null
+      };
     default:
       return state
   }

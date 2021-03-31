@@ -13,22 +13,16 @@ const clearMessage = () => ({
   type: userConstants.CLEAR_MESSAGE,
 });
 
-export const login = (username, email, password) => async (dispatch) => {
+const login = (username, email, password) => async (dispatch) => {
   const request = user => ({ type: userConstants.LOGIN_REQUEST, user })
   const success = user => ({ type: userConstants.LOGIN_SUCCESS, user })
   const failure = error => ({ type: userConstants.LOGIN_FAILURE, error })
 
   try {
     dispatch(request({ user: username }));
-    console.log('mmmmmmmmmmmmm', username, password);
     const user = await userService.login(username, email, password)
-    console.log('success---------', username, password);
-    console.log('after- success---------', username, password);
-    // history.push('/', { user });
     dispatch(success(user));
-    // return fetchInfo;
   } catch (error) {
-    console.log('error:++++++++ ', error);
     dispatch(failure(error));
     error.forEach(({ msg }) => {
       dispatch(alertActions.error(`${msg}`));
@@ -36,31 +30,10 @@ export const login = (username, email, password) => async (dispatch) => {
   }
 }
 
-// const login = async (username, password) => {
-//   const request = user => ({ type: userConstants.LOGIN_REQUEST, user })
-//   const success = user => ({ type: userConstants.LOGIN_SUCCESS, user })
-//   const failure = error => ({ type: userConstants.LOGIN_FAILURE, error })
-//   try {
-//     request({ user: username });
-//     console.log('mmmmmmmmmmmmm', username, password);
-//     const user = await userService.login(username, password)
-//     console.log('success---------', username, password);
-//     console.log('after- success---------', username, password);
-//     history.push('/', { user });
-//     success(user);
-//   } catch (err) {
-//     console.log('Error-11111111111----------', err)
-//     failure(err);
-//      err.forEach(({ msg }) => {
-//      alertActions.error(`${msg}`);
-//     })
-//     console.log('Error-2222222222222----------', err)
-//     throw err;
-//   }
-// }
-
-const logout = () => {
+const logout = () => (dispatch) => {
+  console.log('Inside logout action------------')
   userService.logout();
+  console.log('After logout action------------')
   return { type: userConstants.LOGOUT };
 }
 

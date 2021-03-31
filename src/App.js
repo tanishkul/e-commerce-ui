@@ -41,7 +41,7 @@
 // -----------------------------------------
 import React from 'react';
 import {
-  Router, Route, Switch, Redirect
+  BrowserRouter as Router, Route, Switch, Redirect
 } from 'react-router-dom';
 import { connect } from 'react-redux';
 
@@ -75,10 +75,11 @@ class App extends React.Component {
             }
             <Router history={history}>
               <Switch>
-                <Route component={HomePage} exact path="/" />
-                <Route component={LoginPage} path="/login" />
+                <PrivateRoute component={HomePage} exact path="/" />
+                {/* <Route component={HomePage} exact path="/" /> */}
+                <Route component={LoginPage} exact path="/login" />
                 <Route component={RegisterPage} path="/register" />
-                {/* <Redirect from="*" to="/" /> */}
+                <Redirect from="*" to="/" />
               </Switch>
             </Router>
           </div>
