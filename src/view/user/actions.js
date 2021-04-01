@@ -31,10 +31,9 @@ const login = (username, email, password) => async (dispatch) => {
 }
 
 const logout = () => (dispatch) => {
-  console.log('Inside logout action------------')
+  const success = () => ({ type: userConstants.LOGOUT })
   userService.logout();
-  console.log('After logout action------------')
-  return { type: userConstants.LOGOUT };
+  dispatch(success());
 }
 
 const register = (user) => {
@@ -60,20 +59,31 @@ const register = (user) => {
   };
 }
 
-const getAll = () => {
+const getAll = () => async (dispatch) => {
   const request = () => ({ type: userConstants.GETALL_REQUEST });
   const success = users => ({ type: userConstants.GETALL_SUCCESS, users });
   const failure = error => ({ type: userConstants.GETALL_FAILURE, error });
 
-  return (dispatch) => {
+  try {
     dispatch(request());
+    const users = await userService.getAll();
+    dispatch(success(users));
+  } catch (error) {
+    dispatch(failure(error));
+    // error.forEach(({ msg }) => {
+    //   dispatch(alertActions.error(`${msg}`));
+    // })
+  }
 
-    userService.getAll()
-      .then(
-        users => dispatch(success(users)),
-        error => dispatch(failure(error.toString()))
-      );
-  };
+  // return (dispatch) => {
+  //   dispatch(request());
+
+  //   userService.getAll()
+  //     .then(
+  //       users => dispatch(success(users)),
+  //       error => dispatch(failure(error.toString()))
+  //     );
+  // };
 }
 
 // prefixed function name with underscore because delete is a reserved word in javascript

@@ -65,7 +65,6 @@ class App extends React.Component {
 
   render() {
     const { alert } = this.props;
-    console.log('app-----------------', alert, this.props)
     return (
       <div className="jumbotron">
         <div className="container">

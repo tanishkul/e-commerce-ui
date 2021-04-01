@@ -22,16 +22,12 @@ class HomePage extends React.Component {
   }
 
   render() {
-    console.log('this props-------------', this.props, utilities.getUserName())
-    const { users } = this.props;
-    const { location: { state } } = this.props;
-    const user = utilities.getUserName();
+    const { user, users } = this.props;
     if (user) {
-      console.log('user-----------', user)
       return (
         <div className="col-md-6 col-md-offset-3">
           <h1>
-            {`Hi ${user}!`}
+            {`Hi ${user.name}!`}
           </h1>
           <p>You are logged in with React!!</p>
           <h3>All registered users:</h3>
@@ -42,12 +38,12 @@ class HomePage extends React.Component {
               {users?.error}
             </span>
           )}
-          {users?.items
+          {users
                       && (
                         <ul>
-                          {users.items.map((userDetails, index) => (
+                          {users.map((userDetails, index) => (
                             <li key={userDetails.id}>
-                              {`${userDetails.firstName} ${userDetails.lastName}`}
+                              {`${userDetails.name} ${userDetails.email}`}
                               {
                                 userDetails.deleting ? <em> - Deleting...</em>
                                   : (userDetails.deleteError) ? (
@@ -79,18 +75,27 @@ class HomePage extends React.Component {
   }
 }
 
-function mapState(state) {
-  const { users, authentication } = state;
-  if (authentication) {
-    const { user } = authentication;
-    return { user, users };
-  }
-}
+const mapStateToProps = state => ({
+  user: state.userReducer?.user,
+  users: state.userReducer?.items,
+});
 
-const actionCreators = {
-  getUsers: userActions.getAll,
-  deleteUser: userActions.delete
-}
+const mapDispatchToProps = dispatch => ({
+  getUsers: () => dispatch(userActions.getAll()),
+});
 
-const connectedHomePage = connect(mapState, actionCreators)(HomePage);
+// function mapState(state) {
+//   const { users, authentication } = state;
+//   if (authentication) {
+//     const { user } = authentication;
+//     return { user, users };
+//   }
+// }
+
+// const actionCreators = {
+//   getUsers: userActions.getAll,
+//   deleteUser: userActions.delete
+// }
+
+const connectedHomePage = connect(mapStateToProps, mapDispatchToProps)(HomePage);
 export { connectedHomePage as HomePage };

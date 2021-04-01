@@ -36,18 +36,16 @@ class LoginPage extends React.Component {
       const { username, password, email } = this.state;
       const { login, history } = this.props;
       if ((username || email) && password) {
-        const data = await login(username, email, password);
-        console.log('data-------------', data, sessionStorage.getItem('user'))
+        await login(username, email, password);
         const user = localStorage.getItem('user');
         history.push('/', { user });
       }
     } catch (error) {
-      console.log('11111111111111111111', error);
+      console.log('ERROR:::::', error);
     }
   }
 
   render() {
-    console.log('props------=++++++++', this.props)
     const { loggingIn } = this.props;
     const {
       username,

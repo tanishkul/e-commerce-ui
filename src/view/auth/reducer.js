@@ -85,13 +85,11 @@ export function auth(state = initialState, action) {
         user: action.user
       };
     case userConstants.LOGIN_SUCCESS:
-      console.log('auth-LOGIN**********-----------', state, action)
       return {
         loggedIn: true,
         user: action.user
       };
     case userConstants.LOGIN_FAILURE:
-      console.log('auth------------', state, action)
       return {
         loggedIn: false,
         user: null

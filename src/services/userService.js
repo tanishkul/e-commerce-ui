@@ -26,16 +26,31 @@ const login = async (username, email, password) => {
   }
 }
 
-const logout = () => utilities.removeUserInfo;
+const logout = () => utilities.removeUserInfo();
 
-function getAll() {
-  const requestOptions = {
-    method: 'GET',
-    headers: authHeader()
-  };
-
-  return fetch(`${config.apiUrl}/user`, requestOptions).then(handleResponse);
+const getAll = async () => {
+  try {
+    const data = await axios({
+      method: 'get',
+      url: `${config.apiUrl}/user/`,
+      data: {}
+    });
+    const user = handleResponse(data);
+    // store user details and jwt token in local storage to keep user logged in between page refreshes
+    // utilities.storeUserInfo(user);
+    return user;
+  } catch (error) {
+    throw handleResponse(error.response);
+  }
 }
+// function getAll() {
+//   const requestOptions = {
+//     method: 'GET',
+//     headers: authHeader()
+//   };
+
+//   return fetch(`${config.apiUrl}/user`, requestOptions).then(handleResponse);
+// }
 
 function getById(id) {
   const requestOptions = {
@@ -91,12 +106,11 @@ const handleResponse = (response) => {
         // location.reload(true);
       }
       // const error = (data && data.message) || response.statusText;
-      console.log('Inside handleResponse', data)
       throw data;
     }
     return data;
   } catch (err) {
-    console.log('Inside catch of handleResponse', err)
+    console.log('Inside catch of handleResponse:::', err)
     throw err;
   }
   // return response.data().then((text) => {
