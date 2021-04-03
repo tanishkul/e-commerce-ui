@@ -19,14 +19,14 @@ const useStyles = makeStyles({
   },
 });
 
-const column = ['Name', 'Department', 'EmployeeId', 'Mobile Number', 'Experience(Year)', 'Actions'];
+const column = ['Name', 'Role', 'Email Id', 'Actions'];
 
 export default function SimpleTable({ data, menuItems }) {
   const classes = useStyles();
   const employeeData = data && data.length && data.map(({
-    name, department, employeeId, mobileNumber, experience, actions,
+    name, role, email, actions,
   }) => ({
-    name, department, employeeId, mobileNumber, experience, actions,
+    name, role, email, actions,
   }));
 
   return (
@@ -37,12 +37,10 @@ export default function SimpleTable({ data, menuItems }) {
           {employeeData && employeeData.length ? employeeData.map((row, index) => (
             <TableRow key={row.toString()}>
               <TableCell component="th" scope="row">
-                {row.name}
+                {(row.name) || ''}
               </TableCell>
-              <TableCell align="right">{row.department}</TableCell>
-              <TableCell align="right">{row.employeeId}</TableCell>
-              <TableCell align="right">{row.mobileNumber}</TableCell>
-              <TableCell align="right">{row.experience}</TableCell>
+              <TableCell align="right">{(row.role) || ''}</TableCell>
+              <TableCell align="right">{(row.email) || ''}</TableCell>
               <TableCell align="right">
                 <Menu data={row} ids={index} menuItems={menuItems} />
               </TableCell>

@@ -81,7 +81,7 @@ export function auth(state = initialState, action) {
   switch (action.type) {
     case userConstants.LOGIN_REQUEST:
       return {
-        loggingIn: true,
+        loggedIn: true,
         user: action.user
       };
     case userConstants.LOGIN_SUCCESS:

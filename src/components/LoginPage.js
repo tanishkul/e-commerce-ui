@@ -46,7 +46,7 @@ class LoginPage extends React.Component {
   }
 
   render() {
-    const { loggingIn } = this.props;
+    const { loggedIn } = this.props;
     const {
       username,
       email,
@@ -86,7 +86,7 @@ class LoginPage extends React.Component {
           </div>
           <div className="form-group">
             <button className="btn btn-primary">Login</button>
-            {loggingIn && (
+            {loggedIn && (
               <img
                 alt=""
                 src=""
@@ -102,7 +102,7 @@ class LoginPage extends React.Component {
 }
 
 const mapStateToProps = state => ({
-  loggingIn: state.authentication?.loggingIn,
+  loggedIn: state.authentication?.loggedIn,
 });
 
 const mapDispatchToProps = dispatch => ({

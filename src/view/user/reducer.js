@@ -5,7 +5,6 @@ export function users(state = {}, action) {
     case userConstants.GETALL_REQUEST:
       return {
         ...state,
-        loading: true
       };
     case userConstants.GETALL_SUCCESS:
       return {
@@ -48,7 +47,7 @@ export function users(state = {}, action) {
     case userConstants.LOGIN_REQUEST:
       return {
         ...state,
-        loggingIn: true,
+        loggedIn: true,
         user: action.user
       };
     case userConstants.LOGIN_SUCCESS:
