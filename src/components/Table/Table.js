@@ -24,9 +24,9 @@ const column = ['Name', 'Role', 'Email Id', 'Actions'];
 export default function SimpleTable({ data, menuItems }) {
   const classes = useStyles();
   const employeeData = data && data.length && data.map(({
-    name, role, email, actions,
+    name, role, email, actions, originalId
   }) => ({
-    name, role, email, actions,
+    name, role, email, actions, originalId
   }));
 
   return (
@@ -42,7 +42,7 @@ export default function SimpleTable({ data, menuItems }) {
               <TableCell align="right">{(row.role) || ''}</TableCell>
               <TableCell align="right">{(row.email) || ''}</TableCell>
               <TableCell align="right">
-                <Menu data={row} ids={index} menuItems={menuItems} />
+                <Menu data={row} ids={row.originalId} menuItems={menuItems} />
               </TableCell>
             </TableRow>
           )) : <Typography gutterBottom variant="h5">No employee available for now please add employee ! </Typography>}

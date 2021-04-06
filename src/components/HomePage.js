@@ -8,10 +8,30 @@ import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import CircularProgress from '@material-ui/core/CircularProgress';
 
+import store from '../store';
 import { userActions } from '../view/user';
 import Table from './Table';
 
 class HomePage extends React.Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      users: [],
+    };
+    console.log('storeeeeeeeeeeee', store.getState())
+
+    store.subscribe(() => {
+      // When state will be updated(in our case, when items will be fetched),
+      // we will update local component state and force component to rerender
+      // with new data.
+      this.setState({
+        users: store.getState().users,
+      });
+    });
+  }
+
+
   componentDidMount() {
     const { getUsers } = this.props;
     getUsers();
@@ -19,10 +39,25 @@ class HomePage extends React.Component {
 
   handleDeleteUser(id) {
     const { deleteUser } = this.props;
-    return e => deleteUser(id);
+    const data = deleteUser(id).then((res) => {
+      console.log('resssssssssssss', res);
+    }).catch((err) => {
+      console.log('errrrrrrrrrrrr', err);
+    });
+    console.log('this.props--------------', data);
+    console.log('this.state-------------', this.state);
+    let { users } = this.state;
+    // store.dispatch(scrubStudent(this.state));
+    users = users.filter(obj => obj.originalId !== id);
+    this.setState({
+      users
+    });
   }
 
   render() {
+    console.log('storeeeeeeeee2222222222222eee', store.getState())
+
+    console.log('this.state----1111111111---------', this.state);
     const { user, users } = this.props;
     const items = [
       // {
@@ -56,7 +91,7 @@ class HomePage extends React.Component {
             {`Hi ${user.name}!`}
           </h1>
           <p>You are logged in with React!!</p>
-          <h3>All registered users:</h3>
+          {/* <h3>All registered users:</h3> */}
           {/* {users?.loading && <em>Loading users...</em>} */}
           {users?.error && (
             <span className="text-danger">
@@ -64,35 +99,7 @@ class HomePage extends React.Component {
               {users?.error}
             </span>
           )}
-          {/* {users
-                      && (
-                        <ul>
-                          {users.map((userDetails, index) => (
-                            <li key={userDetails.id}>
-                              {`${userDetails.name} ${userDetails.email}`}
-                              {
-                                userDetails.deleting ? <em> - Deleting...</em>
-                                  : (userDetails.deleteError) ? (
-                                    <span className="text-danger">
-                                      {' '}
-  - ERROR:
-                                      {userDetails.deleteError}
-                                    </span>
-                                  )
-                                    : (
-                                      <span>
-                                        {' '}
-  -
-                                        <a onClick={this.handleDeleteUser(userDetails.id)}>Delete</a>
-                                      </span>
-                                    )
-                              }
-                            </li>
-                          ))}
-                        </ul>
-                      )
-          } */}
-          <Table data={users} menuItems={items} />
+          {(user.role === 'ADMIN') && <Table data={users} menuItems={items} />}
           <p>
             <Link to="/login">Logout</Link>
           </p>
@@ -120,6 +127,7 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => ({
   getUsers: () => dispatch(userActions.getAll()),
+  deleteUser: id => dispatch(userActions.delete(id)),
 });
 
 const connectedHomePage = connect(mapStateToProps, mapDispatchToProps)(HomePage);

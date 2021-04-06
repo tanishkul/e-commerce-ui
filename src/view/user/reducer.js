@@ -17,24 +17,26 @@ export function users(state = {}, action) {
         error: action.error
       };
     case userConstants.DELETE_REQUEST:
+      console.log('DELETE_REQUEST-----------', state, action)
       return {
         ...state,
-        items: state.items.map(user => (user.id === action.id
+        items: state.items.map(user => (user.originalId === action.id
           ? { ...user, deleting: true }
           : user))
       };
     case userConstants.DELETE_SUCCESS:
+      console.log('DELETE_SUCCESS-----------', state, action)
       // remove deleted user from state
       return {
         ...state,
-        items: state.items.filter(user => user.id !== action.id)
+        items: state.items.filter(user => user.originalId !== action.id)
       };
     case userConstants.DELETE_FAILURE:
       // remove 'deleting:true' property and add 'deleteError:[error]' property to user
       return {
         ...state,
         items: state.items.map((user) => {
-          if (user.id === action.id) {
+          if (user.originalId === action.id) {
             // make copy of user without 'deleting:true' property
             const { deleting, ...userCopy } = user;
             // return copy of user with 'deleteError:[error]' property

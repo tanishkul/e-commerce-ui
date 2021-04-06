@@ -18,7 +18,6 @@ const login = async (username, email, password) => {
       }
     });
     const user = handleResponse(data);
-    // store user details and jwt token in local storage to keep user logged in between page refreshes
     utilities.storeUserInfo(user);
     return user;
   } catch (error) {
@@ -36,21 +35,25 @@ const getAll = async () => {
       data: {}
     });
     const user = handleResponse(data);
-    // store user details and jwt token in local storage to keep user logged in between page refreshes
-    // utilities.storeUserInfo(user);
     return user;
   } catch (error) {
     throw handleResponse(error.response);
   }
 }
-// function getAll() {
-//   const requestOptions = {
-//     method: 'GET',
-//     headers: authHeader()
-//   };
 
-//   return fetch(`${config.apiUrl}/user`, requestOptions).then(handleResponse);
-// }
+const _delete = async (id) => {
+  try {
+    const data = await axios({
+      method: 'delete',
+      url: `${config.apiUrl}/user/${id}`,
+      data: {}
+    });
+    const user = handleResponse(data);
+    return user;
+  } catch (error) {
+    throw handleResponse(error.response);
+  }
+}
 
 function getById(id) {
   const requestOptions = {
@@ -87,14 +90,14 @@ function update(user) {
 }
 
 // prefixed function name with underscore because delete is a reserved word in javascript
-function _delete(id) {
-  const requestOptions = {
-    method: 'DELETE',
-    headers: authHeader()
-  };
+// function _delete(id) {
+//   const requestOptions = {
+//     method: 'DELETE',
+//     headers: authHeader()
+//   };
 
-  return fetch(`${config.apiUrl}/user/${id}`, requestOptions).then(handleResponse);
-}
+//   return fetch(`${config.apiUrl}/user/${id}`, requestOptions).then(handleResponse);
+// }
 
 const handleResponse = (response) => {
   try {
