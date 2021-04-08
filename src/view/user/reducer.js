@@ -17,7 +17,6 @@ export function users(state = {}, action) {
         error: action.error
       };
     case userConstants.DELETE_REQUEST:
-      console.log('DELETE_REQUEST-----------', state, action)
       return {
         ...state,
         items: state.items.map(user => (user.originalId === action.id
@@ -25,7 +24,6 @@ export function users(state = {}, action) {
           : user))
       };
     case userConstants.DELETE_SUCCESS:
-      console.log('DELETE_SUCCESS-----------', state, action)
       // remove deleted user from state
       return {
         ...state,

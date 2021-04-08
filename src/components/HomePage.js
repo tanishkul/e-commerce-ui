@@ -1,8 +1,3 @@
-/* eslint-disable consistent-return */
-/* eslint-disable jsx-a11y/anchor-is-valid */
-/* eslint-disable jsx-a11y/no-static-element-interactions */
-/* eslint-disable jsx-a11y/click-events-have-key-events */
-/* eslint-disable no-nested-ternary */
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
@@ -13,25 +8,6 @@ import { userActions } from '../view/user';
 import Table from './Table';
 
 class HomePage extends React.Component {
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      users: [],
-    };
-    console.log('storeeeeeeeeeeee', store.getState())
-
-    store.subscribe(() => {
-      // When state will be updated(in our case, when items will be fetched),
-      // we will update local component state and force component to rerender
-      // with new data.
-      this.setState({
-        users: store.getState().users,
-      });
-    });
-  }
-
-
   componentDidMount() {
     const { getUsers } = this.props;
     getUsers();
@@ -44,14 +20,14 @@ class HomePage extends React.Component {
     }).catch((err) => {
       console.log('errrrrrrrrrrrr', err);
     });
-    console.log('this.props--------------', data);
-    console.log('this.state-------------', this.state);
-    let { users } = this.state;
-    // store.dispatch(scrubStudent(this.state));
-    users = users.filter(obj => obj.originalId !== id);
-    this.setState({
-      users
-    });
+    // console.log('this.props--------------', data);
+    // console.log('this.state-------------', this.state);
+    // let { users } = this.state;
+    // // store.dispatch(scrubStudent(this.state));
+    // users = users.filter(obj => obj.originalId !== id);
+    // this.setState({
+    //   users
+    // });
   }
 
   render() {
@@ -85,6 +61,7 @@ class HomePage extends React.Component {
       )
     }
     if (user && users) {
+      const allUsers = users.filter(item => item.originalId !== user.originalId);
       return (
         <div className="col-md-6 col-md-offset-3">
           <h1>
@@ -99,7 +76,7 @@ class HomePage extends React.Component {
               {users?.error}
             </span>
           )}
-          {(user.role === 'ADMIN') && <Table data={users} menuItems={items} />}
+          {(user.role === 'ADMIN') && <Table data={allUsers} menuItems={items} />}
           <p>
             <Link to="/login">Logout</Link>
           </p>

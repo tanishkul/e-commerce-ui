@@ -1,7 +1,6 @@
-/* eslint-disable array-callback-return */
 import { userConstants } from './actionType';
 import { userService } from '../../services';
-import { alertActions } from '../alert';
+import { showSuccessSnackbar } from '../alert';
 import { history } from '../../helpers';
 
 const setMessage = message => ({
@@ -22,11 +21,12 @@ const login = (username, email, password) => async (dispatch) => {
     dispatch(request({ user: username }));
     const user = await userService.login(username, email, password)
     dispatch(success(user));
+    dispatch(showSuccessSnackbar('Success!'));
   } catch (error) {
     dispatch(failure(error));
-    error.forEach(({ msg }) => {
-      dispatch(alertActions.error(`${msg}`));
-    })
+    // error.forEach(({ msg }) => {
+    //   dispatch(alertActions.error(`${msg}`));
+    // })
   }
 }
 
@@ -49,11 +49,11 @@ const register = (user) => {
         (userRes) => {
           dispatch(success());
           history.push('/login');
-          dispatch(alertActions.success('Registration successful'));
+          // dispatch(alertActions.success('Registration successful'));
         },
         (error) => {
           dispatch(failure(error.toString()));
-          dispatch(alertActions.error(error.toString()));
+          // dispatch(alertActions.error(error.toString()));
         }
       );
   };
@@ -84,24 +84,14 @@ const _delete = id => async (dispatch) => {
 
   try {
     dispatch(request(id));
-    const user = await userService.delete(id);
-    console.log('1111111111111111', user)
+    await userService.delete(id);
     dispatch(success(id));
   } catch (error) {
     dispatch(failure(error));
-    error.forEach(({ msg }) => {
-      dispatch(alertActions.error(`${msg}`));
-    })
+    // error.forEach(({ msg }) => {
+    //   dispatch(alertActions.error(`${msg}`));
+    // })
   }
-  // return (dispatch) => {
-  //   dispatch(request(id));
-
-  //   userService.delete(id)
-  //     .then(
-  //       user => dispatch(success(id)),
-  //       error => dispatch(failure(id, error.toString()))
-  //     );
-  // };
 }
 
 export const userActions = {

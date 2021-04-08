@@ -46,11 +46,12 @@ import {
 import { connect } from 'react-redux';
 
 import { history } from './helpers';
-import { alertActions } from './view/alert';
+// import { alertActions } from './view/alert';
 import { PrivateRoute } from './components/PrivateRoute';
 import { HomePage } from './components/HomePage';
 import { LoginPage } from './components/LoginPage';
 import { RegisterPage } from './components/RegisterPage';
+import Alert from './components/Alert';
 
 class App extends React.Component {
   constructor(props) {
@@ -74,6 +75,7 @@ class App extends React.Component {
             }
             <Router history={history}>
               <Switch>
+                <Alert />
                 <PrivateRoute component={HomePage} exact path="/" />
                 {/* <Route component={HomePage} exact path="/" /> */}
                 <Route component={LoginPage} exact path="/login" />
@@ -94,7 +96,7 @@ function mapState(state) {
 }
 
 const actionCreators = {
-  clearAlerts: alertActions.clear
+  // clearAlerts: alertActions.clear
 };
 
 const connectedApp = connect(mapState, actionCreators)(App);
