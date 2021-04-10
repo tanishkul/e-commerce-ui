@@ -6,3 +6,6 @@ import reducer from './view/reducer';
 
 const store = createStore(reducer, {}, composeWithDevTools(applyMiddleware(logger, thunk)));
 export default store;
+// const createStoreWithMiddleware = applyMiddleware(logger, thunk)(createStore);
+// console.log('createStoreWithMiddleware', createStoreWithMiddleware(reducer).getState())
+// export default createStoreWithMiddleware(reducer);

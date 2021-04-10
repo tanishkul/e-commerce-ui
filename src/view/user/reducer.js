@@ -4,35 +4,37 @@ export function users(state = {}, action) {
   switch (action.type) {
     case userConstants.GETALL_REQUEST:
       return {
-        loading: true
+        ...state,
       };
     case userConstants.GETALL_SUCCESS:
       return {
+        ...state,
         items: action.users
       };
     case userConstants.GETALL_FAILURE:
       return {
+        ...state,
         error: action.error
       };
     case userConstants.DELETE_REQUEST:
-      // add 'deleting:true' property to user being deleted
       return {
         ...state,
-        items: state.items.map(user => (user.id === action.id
+        items: state.items.map(user => (user.originalId === action.id
           ? { ...user, deleting: true }
           : user))
       };
     case userConstants.DELETE_SUCCESS:
       // remove deleted user from state
       return {
-        items: state.items.filter(user => user.id !== action.id)
+        ...state,
+        items: state.items.filter(user => user.originalId !== action.id)
       };
     case userConstants.DELETE_FAILURE:
       // remove 'deleting:true' property and add 'deleteError:[error]' property to user
       return {
         ...state,
         items: state.items.map((user) => {
-          if (user.id === action.id) {
+          if (user.originalId === action.id) {
             // make copy of user without 'deleting:true' property
             const { deleting, ...userCopy } = user;
             // return copy of user with 'deleteError:[error]' property
@@ -41,6 +43,30 @@ export function users(state = {}, action) {
 
           return user;
         })
+      };
+    case userConstants.LOGIN_REQUEST:
+      return {
+        ...state,
+        loggedIn: true,
+        user: action.user
+      };
+    case userConstants.LOGIN_SUCCESS:
+      return {
+        ...state,
+        loggedIn: true,
+        user: action.user
+      };
+    case userConstants.LOGIN_FAILURE:
+      return {
+        ...state,
+        loggedIn: false,
+        user: null
+      };
+    case userConstants.LOGOUT:
+      return {
+        ...state,
+        loggedIn: false,
+        user: null
       };
     default:
       return state

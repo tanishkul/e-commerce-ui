@@ -18,6 +18,7 @@ class LoginPage extends React.Component {
     this.state = {
       username: '',
       password: '',
+      email: '',
       submitted: false
     };
   }
@@ -27,25 +28,31 @@ class LoginPage extends React.Component {
     this.setState({ [name]: value });
   }
 
-  handleSubmit = (e) => {
+  handleSubmit = async (e) => {
     try {
       e.preventDefault();
 
       this.setState({ submitted: true });
-      const { username, password } = this.state;
-      const { login } = this.props;
-      if (username && password) {
-        const data = login(username, password);
-        console.log('data-------------', data)
+      const { username, password, email } = this.state;
+      const { login, history } = this.props;
+      if ((username || email) && password) {
+        await login(username, email, password);
+        const user = localStorage.getItem('user');
+        history.push('/', { user });
       }
     } catch (error) {
-      console.log('11111111111111111111', error);
+      console.log('ERROR:::::', error);
     }
   }
 
   render() {
-    const { loggingIn } = this.props;
-    const { username, password, submitted } = this.state;
+    const { loggedIn } = this.props;
+    const {
+      username,
+      email,
+      password,
+      submitted,
+    } = this.state;
     return (
       <div className="col-md-6 col-md-offset-3">
         <h2>Login</h2>
@@ -55,6 +62,13 @@ class LoginPage extends React.Component {
             <input className="form-control" name="username" onChange={this.handleChange} type="text" value={username} />
             {submitted && !username
                             && <div className="help-block">Username is required</div>
+            }
+          </div>
+          <div className={`form-group${submitted && !email ? ' has-error' : ''}`}>
+            <label htmlFor="email">Email</label>
+            <input className="form-control" name="email" onChange={this.handleChange} type="text" value={email} />
+            {submitted && !email
+                            && <div className="help-block">Email is required</div>
             }
           </div>
           <div className={`form-group${submitted && !password ? ' has-error' : ''}`}>
@@ -72,7 +86,7 @@ class LoginPage extends React.Component {
           </div>
           <div className="form-group">
             <button className="btn btn-primary">Login</button>
-            {loggingIn && (
+            {loggedIn && (
               <img
                 alt=""
                 src=""
@@ -87,17 +101,14 @@ class LoginPage extends React.Component {
   }
 }
 
-function mapState(state) {
-  if (state && state.authentication) {
-    const { loggingIn } = state.authentication;
-    return { loggingIn };
-  }
-}
+const mapStateToProps = state => ({
+  loggedIn: state.authentication?.loggedIn,
+});
 
-const actionCreators = {
-  login: userActions.login,
-  logout: userActions.logout
-};
+const mapDispatchToProps = dispatch => ({
+  login: (username, email, password) => dispatch(userActions.login(username, email, password)),
+  logout: () => dispatch(userActions.logout()),
+});
 
-const connectedLoginPage = withSnackbar(connect(mapState, actionCreators)(LoginPage));
+const connectedLoginPage = withSnackbar(connect(mapStateToProps, mapDispatchToProps)(LoginPage));
 export { connectedLoginPage as LoginPage };

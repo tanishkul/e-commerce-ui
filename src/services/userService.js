@@ -2,90 +2,57 @@ import axios from 'axios';
 
 import config from '../config/config';
 import {
-  authHeader
+  authHeader,
+  utilities
 } from '../helpers';
 
-const login = async (username, password) => {
+const login = async (username, email, password) => {
   try {
     const data = await axios({
       method: 'post',
-      url: `${config.apiUrl}/user/`,
+      url: `${config.apiUrl}/user/login`,
       data: {
-        // email: 'hvadjv',
+        email,
         name: username,
         password
       }
     });
     const user = handleResponse(data);
-    // store user details and jwt token in local storage to keep user logged in between page refreshes
-    localStorage.setItem('user', JSON.stringify(user));
+    utilities.storeUserInfo(user);
     return user;
   } catch (error) {
-    const data = handleResponse(error.response);
-    console.log('Inside login ', data);
-    throw data;
+    throw handleResponse(error.response);
   }
 }
 
-// function login(username, password) {
-//   const requestOptions = {
-//     method: 'POST',
-//     headers: {
-//       'Content-Type': 'application/json'
-//     },
-//     body: {
-//       email: 'hvadjv',
-//       name: username,
-//       password
-//     }
-//   };
+const logout = () => utilities.removeUserInfo();
 
-//   // axios({
-//   //   method: 'POST',
-//   //   url: '/user/12345',
-//   //   data: {
-//   //     firstName: 'Fred',
-//   //     lastName: 'Flintstone'
-//   //   }
-//   // });
-//   return axios({
-//     method: 'post',
-//     url: `${config.apiUrl}/user/`,
-//     data: {
-//       // email: 'hvadjv',
-//       name: username,
-//       password
-//     }
-//   }).then(handleResponse)
-//     .then((user) => {
-//       // store user details and jwt token in local storage to keep user logged in between page refreshes
-//       localStorage.setItem('user', JSON.stringify(user));
-
-//       return user;
-//     }).catch((err) => {
-//     });
-//   // return axios.post(`${config.apiUrl}/user/`, requestOptions)
-//   // .then(handleResponse)
-//   // .then((user) => {
-//   //   // store user details and jwt token in local storage to keep user logged in between page refreshes
-//   //   localStorage.setItem('user', JSON.stringify(user));
-
-//   //   return user;
-//   // });
-// }
-
-function logout() {
-  // remove user from local storage to log user out
-  localStorage.removeItem('user');
+const getAll = async () => {
+  try {
+    const data = await axios({
+      method: 'get',
+      url: `${config.apiUrl}/user/`,
+      data: {}
+    });
+    const user = handleResponse(data);
+    return user;
+  } catch (error) {
+    throw handleResponse(error.response);
+  }
 }
 
-function getAll() {
-  const requestOptions = {
-    method: 'GET',
-    headers: authHeader()
-  };
-
-  return fetch(`${config.apiUrl}/user`, requestOptions).then(handleResponse);
+const _delete = async (id) => {
+  try {
+    const data = await axios({
+      method: 'delete',
+      url: `${config.apiUrl}/user/${id}`,
+      data: {}
+    });
+    const user = handleResponse(data);
+    return user;
+  } catch (error) {
+    throw handleResponse(error.response);
+  }
 }
 
 function getById(id) {
@@ -123,14 +90,14 @@ function update(user) {
 }
 
 // prefixed function name with underscore because delete is a reserved word in javascript
-function _delete(id) {
-  const requestOptions = {
-    method: 'DELETE',
-    headers: authHeader()
-  };
+// function _delete(id) {
+//   const requestOptions = {
+//     method: 'DELETE',
+//     headers: authHeader()
+//   };
 
-  return fetch(`${config.apiUrl}/user/${id}`, requestOptions).then(handleResponse);
-}
+//   return fetch(`${config.apiUrl}/user/${id}`, requestOptions).then(handleResponse);
+// }
 
 const handleResponse = (response) => {
   try {
@@ -142,12 +109,11 @@ const handleResponse = (response) => {
         // location.reload(true);
       }
       // const error = (data && data.message) || response.statusText;
-      console.log('Inside handleResponse', data)
       throw data;
     }
     return data;
   } catch (err) {
-    console.log('Inside catch of handleResponse', err)
+    console.log('Inside catch of handleResponse:::', err)
     throw err;
   }
   // return response.data().then((text) => {
