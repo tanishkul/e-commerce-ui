@@ -1,20 +1,39 @@
-import { alertConstants } from './actionType';
+// import { alertConstants } from './actionType';
 
-export function alert(state = {}, action) {
+// export function alert(state = {}, action) {
+//   switch (action.type) {
+//     case alertConstants.SUCCESS:
+//       return {
+//         type: 'alert-success',
+//         message: action.message
+//       };
+//     case alertConstants.ERROR:
+//       return {
+//         type: 'alert-danger',
+//         message: action.message
+//       };
+//     case alertConstants.CLEAR:
+//       return {};
+//     default:
+//       return state
+//   }
+// }
+export const alert = (state = {}, action) => {
   switch (action.type) {
-    case alertConstants.SUCCESS:
+    case 'SNACKBAR_SUCCESS':
       return {
-        type: 'alert-success',
-        message: action.message
+        ...state,
+        successSnackbarOpen: true,
+        successSnackbarMessage: action.message
       };
-    case alertConstants.ERROR:
+    case 'SNACKBAR_CLEAR':
       return {
-        type: 'alert-danger',
-        message: action.message
+        ...state,
+        successSnackbarOpen: false,
+        errorSnackbarOpen: false,
+        infoSnackbarOpen: false
       };
-    case alertConstants.CLEAR:
-      return {};
     default:
-      return state
+      return state;
   }
-}
+};

@@ -41,16 +41,17 @@
 // -----------------------------------------
 import React from 'react';
 import {
-  Router, Route, Switch, Redirect
+  BrowserRouter as Router, Route, Switch, Redirect
 } from 'react-router-dom';
 import { connect } from 'react-redux';
 
 import { history } from './helpers';
-import { alertActions } from './view/alert';
+// import { alertActions } from './view/alert';
 import { PrivateRoute } from './components/PrivateRoute';
 import { HomePage } from './components/HomePage';
 import { LoginPage } from './components/LoginPage';
 import { RegisterPage } from './components/RegisterPage';
+import Alert from './components/Alert';
 
 class App extends React.Component {
   constructor(props) {
@@ -65,7 +66,6 @@ class App extends React.Component {
 
   render() {
     const { alert } = this.props;
-    console.log('app-----------------', alert, this.props)
     return (
       <div className="jumbotron">
         <div className="container">
@@ -75,8 +75,10 @@ class App extends React.Component {
             }
             <Router history={history}>
               <Switch>
+                <Alert />
                 <PrivateRoute component={HomePage} exact path="/" />
-                <Route component={LoginPage} path="/login" />
+                {/* <Route component={HomePage} exact path="/" /> */}
+                <Route component={LoginPage} exact path="/login" />
                 <Route component={RegisterPage} path="/register" />
                 <Redirect from="*" to="/" />
               </Switch>
@@ -94,7 +96,7 @@ function mapState(state) {
 }
 
 const actionCreators = {
-  clearAlerts: alertActions.clear
+  // clearAlerts: alertActions.clear
 };
 
 const connectedApp = connect(mapState, actionCreators)(App);

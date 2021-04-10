@@ -1,32 +1,39 @@
-/* eslint-disable array-callback-return */
 import { userConstants } from './actionType';
 import { userService } from '../../services';
-import { alertActions } from '../alert';
+import { showSuccessSnackbar } from '../alert';
 import { history } from '../../helpers';
 
-const login = async (username, password) => {
+const setMessage = message => ({
+  type: userConstants.SET_MESSAGE,
+  payload: message,
+});
+
+const clearMessage = () => ({
+  type: userConstants.CLEAR_MESSAGE,
+});
+
+const login = (username, email, password) => async (dispatch) => {
   const request = user => ({ type: userConstants.LOGIN_REQUEST, user })
   const success = user => ({ type: userConstants.LOGIN_SUCCESS, user })
   const failure = error => ({ type: userConstants.LOGIN_FAILURE, error })
+
   try {
-    request({ user: username });
-    const user = await userService.login(username, password)
-    success(user);
-    history.push('/', { user });
-    return user;
-  } catch (err) {
-    console.log('Error-11111111111----------', err)
-    err.map(({ msg }) => {
-      failure(`${msg}`);
-      alertActions.error(`${msg}`);
-    })
-    throw err;
+    dispatch(request({ user: username }));
+    const user = await userService.login(username, email, password)
+    dispatch(success(user));
+    dispatch(showSuccessSnackbar('Success!'));
+  } catch (error) {
+    dispatch(failure(error));
+    // error.forEach(({ msg }) => {
+    //   dispatch(alertActions.error(`${msg}`));
+    // })
   }
 }
 
-const logout = () => {
+const logout = () => (dispatch) => {
+  const success = () => ({ type: userConstants.LOGOUT })
   userService.logout();
-  return { type: userConstants.LOGOUT };
+  dispatch(success());
 }
 
 const register = (user) => {
@@ -42,47 +49,49 @@ const register = (user) => {
         (userRes) => {
           dispatch(success());
           history.push('/login');
-          dispatch(alertActions.success('Registration successful'));
+          // dispatch(alertActions.success('Registration successful'));
         },
         (error) => {
           dispatch(failure(error.toString()));
-          dispatch(alertActions.error(error.toString()));
+          // dispatch(alertActions.error(error.toString()));
         }
       );
   };
 }
 
-const getAll = () => {
+const getAll = () => async (dispatch) => {
   const request = () => ({ type: userConstants.GETALL_REQUEST });
   const success = users => ({ type: userConstants.GETALL_SUCCESS, users });
   const failure = error => ({ type: userConstants.GETALL_FAILURE, error });
 
-  return (dispatch) => {
+  try {
     dispatch(request());
-
-    userService.getAll()
-      .then(
-        users => dispatch(success(users)),
-        error => dispatch(failure(error.toString()))
-      );
-  };
+    const users = await userService.getAll();
+    dispatch(success(users));
+  } catch (error) {
+    dispatch(failure(error));
+    // error.forEach(({ msg }) => {
+    //   dispatch(alertActions.error(`${msg}`));
+    // })
+  }
 }
 
-// prefixed function name with underscore because delete is a reserved word in javascript
-const _delete = (id) => {
-  const request = idReq => ({ type: userConstants.DELETE_REQUEST, idReq });
-  const success = idReq => ({ type: userConstants.DELETE_SUCCESS, idReq });
-  const failure = (idReq, error) => ({ type: userConstants.DELETE_FAILURE, idReq, error });
+const _delete = id => async (dispatch) => {
+  const request = idReq => ({ type: userConstants.DELETE_REQUEST, id: idReq });
+  const success = idReq => ({ type: userConstants.DELETE_SUCCESS, id: idReq });
+  const failure = (idReq, error) => ({ type: userConstants.DELETE_FAILURE, id: idReq, error });
 
-  return (dispatch) => {
+
+  try {
     dispatch(request(id));
-
-    userService.delete(id)
-      .then(
-        user => dispatch(success(id)),
-        error => dispatch(failure(id, error.toString()))
-      );
-  };
+    await userService.delete(id);
+    dispatch(success(id));
+  } catch (error) {
+    dispatch(failure(error));
+    // error.forEach(({ msg }) => {
+    //   dispatch(alertActions.error(`${msg}`));
+    // })
+  }
 }
 
 export const userActions = {
@@ -90,5 +99,7 @@ export const userActions = {
   logout,
   register,
   getAll,
-  delete: _delete
+  delete: _delete,
+  setMessage,
+  clearMessage
 };
