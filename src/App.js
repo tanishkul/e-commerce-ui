@@ -75,7 +75,7 @@ class App extends React.Component {
             }
             <Router history={history}>
               <Switch>
-                <Alert />
+                {/* <Alert /> */}
                 <PrivateRoute component={HomePage} exact path="/" />
                 {/* <Route component={HomePage} exact path="/" /> */}
                 <Route component={LoginPage} exact path="/login" />

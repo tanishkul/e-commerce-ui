@@ -29,19 +29,20 @@ class LoginPage extends React.Component {
   }
 
   handleSubmit = async (e) => {
+    const { snackbarShowMessage } = this.props;
     try {
       e.preventDefault();
-
       this.setState({ submitted: true });
       const { username, password, email } = this.state;
       const { login, history } = this.props;
       if ((username || email) && password) {
         await login(username, email, password);
+        snackbarShowMessage('Login Successful!');
         const user = localStorage.getItem('user');
         history.push('/', { user });
       }
     } catch (error) {
-      console.log('ERROR:::::', error);
+      snackbarShowMessage('Login Failed!', 'error');
     }
   }
 

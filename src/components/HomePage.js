@@ -4,6 +4,8 @@ import { connect } from 'react-redux';
 import CircularProgress from '@material-ui/core/CircularProgress';
 
 import store from '../store';
+import { withSnackbar } from '../hoc/SnackBarHOC';
+
 import { userActions } from '../view/user';
 import Table from './Table';
 
@@ -15,25 +17,16 @@ class HomePage extends React.Component {
 
   handleDeleteUser(id) {
     const { deleteUser } = this.props;
+    const { snackbarShowMessage } = this.props;
+
     const data = deleteUser(id).then((res) => {
-      console.log('resssssssssssss', res);
+      snackbarShowMessage('User deleted successfully!');
     }).catch((err) => {
-      console.log('errrrrrrrrrrrr', err);
+      snackbarShowMessage('User deletion failed!', 'error');
     });
-    // console.log('this.props--------------', data);
-    // console.log('this.state-------------', this.state);
-    // let { users } = this.state;
-    // // store.dispatch(scrubStudent(this.state));
-    // users = users.filter(obj => obj.originalId !== id);
-    // this.setState({
-    //   users
-    // });
   }
 
   render() {
-    console.log('storeeeeeeeee2222222222222eee', store.getState())
-
-    console.log('this.state----1111111111---------', this.state);
     const { user, users } = this.props;
     const items = [
       // {
@@ -68,8 +61,6 @@ class HomePage extends React.Component {
             {`Hi ${user.name}!`}
           </h1>
           <p>You are logged in with React!!</p>
-          {/* <h3>All registered users:</h3> */}
-          {/* {users?.loading && <em>Loading users...</em>} */}
           {users?.error && (
             <span className="text-danger">
   ERROR:
@@ -107,5 +98,5 @@ const mapDispatchToProps = dispatch => ({
   deleteUser: id => dispatch(userActions.delete(id)),
 });
 
-const connectedHomePage = connect(mapStateToProps, mapDispatchToProps)(HomePage);
+const connectedHomePage = withSnackbar(connect(mapStateToProps, mapDispatchToProps)(HomePage));
 export { connectedHomePage as HomePage };

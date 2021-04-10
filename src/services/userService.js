@@ -113,7 +113,6 @@ const handleResponse = (response) => {
     }
     return data;
   } catch (err) {
-    console.log('Inside catch of handleResponse:::', err)
     throw err;
   }
   // return response.data().then((text) => {

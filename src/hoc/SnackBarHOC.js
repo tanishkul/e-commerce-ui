@@ -31,8 +31,8 @@ export const withSnackbar = WrappedComponent => (props) => {
       <WrappedComponent {...props} snackbarShowMessage={showMessage} />
       <Snackbar
         anchorOrigin={{
-          vertical: 'bottom',
-          horizontal: 'center'
+          vertical: 'top',
+          horizontal: 'right'
         }}
         autoHideDuration={duration}
         onClose={handleClose}
